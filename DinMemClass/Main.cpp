@@ -2,13 +2,15 @@
 #include "Myfunc.h"
 #include "Auxiliary.h"
 
+
+
 class String
 {
 	unsigned int size; // Разме строки в Байтах
 	char* str;         // указатель на строку в динамической памяти
 	////////////////////////////////////////////////////////////////
 public:
-	/////////////////////////GET&SET
+	///////////////////////// *********GETS
 	int get_size() const
 	{
 		return size;
@@ -18,25 +20,30 @@ public:
 	{
 		return str;
 	}
-
+	///////////////////////////////////////
 	char* get_str() // Метод для неконст обектов (дает возможность изменять объект)
 	{
 		return str;
 	}
-	/////////////////////////Operator
-	String& operator+=(const String& obj)
-	{
-		return (this + obj);
-	}
+	///////////////////////// ***********OPERATORS
+	///////////////////////// Operator +=
+	//String operator+=(String& obj)
+	//{
+	//	String A = *this;
+	//	//A = A + obj;
+	//	return A;
+	//}
+	//////////////////////////////////////////////// Operator []
 	const char& operator[](int index) const
 	{
 		return str[index];
 	}
-	///////////////////////////////////////////////
+	/////////////////////////////////////////////// Operator []
 	char& operator[](int index)
 	{
 		return str[index];
 	}
+	/////////////////////////////////////////// Operator MoveAssignment
 	String& operator=(String&& other)
 	{
 		delete[] str;
@@ -46,43 +53,41 @@ public:
 		//for (int i = 0; other.str[i]; i++) this->str[i] = other.str[i];
 		std::cout << "MoveAssignmentOperator" << this << std::endl;
 		return *this;
-	}
-		
-///////////////////////////////////////////////
-
+	}		
+/////////////////////////////////////////////// AssigmentOperator
 		String& operator=(const String& other)
-		{
-			
+		{			
 			this->size = other.size;
 			this->str = new char[size] {};
 			for (int i = 0; other.str[i]; i++) this->str[i] = other.str[i];
 			std::cout << "AssigmentOperator" << this << std::endl;
 			return *this;
 		}
-
-	/////////////////////////Methods
+	///////////////////////// ******* METHODS
+		//////////////////// print
 		void print() const
 		{
 			std::cout << "size:\t" << size << std::endl;
 			std::cout << "str:\t" << str << std::endl;     // Оператор << перегружен с char таким образом, что вместо адреса при выводе указателя выводит значение
 		}
-		/////////////////////////////////////////
+		///////////////////////////////////////// Strlen
 		int Strlen(const char* str)
 		{
 			int i = 0;
 			for (; str[i]; i++)
 			return i;
 		}
-	/////////////////////////Constructor
+
+	/////////////////////////   ***** CONSTRUCTORS
 		
-		String(String&& other)  // MoveConstructor
-		{
-			this->size = other.size;
-			this->str = other.str;
-			other.str = nullptr/*(или поставить 0 вместо nullptr)*/; // применяется к указателям 
-			std::cout << "MoveConstructor" << this << std::endl;
- 		}
-	/////////////////////////////////
+		//String(String&& other)  // MoveConstructor
+		//{
+		//	this->size = other.size;
+		//	this->str = other.str;
+		//	other.str = nullptr/*(или поставить 0 вместо nullptr)*/; // применяется к указателям 
+		//	std::cout << "MoveConstructor" << this << std::endl;
+ 	//	}
+	///////////////////////////////// CopyConstructor
 		String(const String& other)                                    // При коппировании будет выделятся другая область памяти
 		{
 			this->size = other.size;
@@ -90,14 +95,14 @@ public:
 			for (int i = 0; other.str[i]; i++) this->str[i] = other.str[i];
 			std::cout << "CopyConstructor" << this << std::endl;
 		}
-		//////////////////////////////////
+		////////////////////////////////// DefultConstructor
 		String(unsigned int size = 80)
 		{
 			this->size = size;
 			this->str = new char[size] {};
 			std::cout << "DefultConstructor" << this << std::endl;
 		}
-		/////////////////////////////////
+		///////////////////////////////// Constructor whith one parameter 
 		String(const char* str)
 		{
 			this->size = strlen(str)+1;
@@ -106,28 +111,31 @@ public:
 			std::cout << "Constructor" << this << std::endl;
 		}
 
-		~String()
+		~String() ///////////////////////////////// Defstructor
 		{
 			delete[] this->str;
 			std::cout << "Defstructor" << this << std::endl;
 		}
 		
 };
-
-std::ostream& operator<<(std::ostream& os, const char* str)
-{
-	for (int i = 0; str[i]; i++)os << str + i;
-	return os;
-}
-
-std::ostream& operator<<(std::ostream& os, char* str)
-{
-	for (int i = 0; str[i]; i++)os << str + i;
-	return os;
-}
+//
+//std::ostream& operator<<(std::ostream& os, const char* str)
+//{
+//	for (int i = 0; str[i]; i++)os << str + i;
+//	return os;
+//}
+//
+//std::ostream& operator<<(std::ostream& os, char* str)
+//{
+//	for (int i = 0; str[i]; i++)os << str + i;
+//	return os;
+//}
 ///////////////////////////FUNCTIONS///////////////////////
+
 String operator+(const String& left, const String& right);
+void operator+=(String& left, const String& right);
 std::ostream& operator<<(std::ostream& os, String& str);
+
 void main()
 {
 	setlocale(LC_ALL, "Russian");
@@ -145,17 +153,23 @@ void main()
 	str1.print();
 	String str2 = "Hello";
 	str2.print();*/
-	String str3;// = str2;
 	//str3.print();
-	String str4;
-	str3 = "WHATAAA";
 	//str3.print();
-	str4 = "F.......K";
 	//str4.print();
+
+	String str3;// = str2;
+	str3 = "WH";
+	String str4;
+	str4 = "FK";
+
 	String str5;
-	str5 = str3 + " " + str4;
+	str5 = str3 + str4;
+	//str5.print();
+	str5 += str3;
 	str5.print();
-	std::cout << str5;
+	//std::cout << str5 << std::endl;
+
+	//std::cout << str5.get_str();
 }
 
 
@@ -172,9 +186,14 @@ String operator+(const String& left, const String& right)
 
 	return result;
 }
-
-std::ostream& operator<<(std::ostream& os, String& str)
+////////////////////////////////////////////////////////////////////
+void operator+=(String& left, const String& right)
 {	
+	left = left + right;		
+}
+////////////////////////////////////////////////////////////////////
+std::ostream& operator<<(std::ostream& os, String& str)
+{
 	os << str.get_str();
 	return os;
 }
